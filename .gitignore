@@ -17,3 +17,13 @@
 CMakeCache.txt
 CMakeFiles
 Makefile
+
+*.log
+
+# computer specific configs
+ogre.cfg
+
+#executables
+#
+Tragopan
+
