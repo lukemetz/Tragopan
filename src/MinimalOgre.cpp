@@ -15,7 +15,9 @@ This source file is part of the
 -----------------------------------------------------------------------------
 */
 #include "MinimalOgre.hpp"
- 
+
+#include "Voxelizor.hpp"
+
 //-------------------------------------------------------------------------------------
 MinimalOgre::MinimalOgre(void)
     : mRoot(0),
@@ -138,8 +140,8 @@ bool MinimalOgre::go(void)
     // Create the scene
     Ogre::Entity* ogreHead = mSceneMgr->createEntity("Head", "cube.mesh");
  
-    Ogre::SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    headNode->attachObject(ogreHead);
+    //Ogre::SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    //headNode->attachObject(ogreHead);
  
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
@@ -203,9 +205,13 @@ bool MinimalOgre::go(void)
     mDetailsPanel->hide();
  
     mRoot->addFrameListener(this);
+    Voxelizor *v = new Voxelizor();
+    v->fill();
+    v->to_ogre_mesh(*mSceneMgr);
 //-------------------------------------------------------------------------------------
     mRoot->startRendering();
  
+    
     return true;
 }
  

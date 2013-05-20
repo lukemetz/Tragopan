@@ -14,6 +14,7 @@ add_definitions("-std=c++11")
 #TODO generalize me
 include_directories(/usr/local/include/OGRE/)
 include_directories(/usr/local/include/OGRE/Overlay/)
+include_directories(/usr/local/include/PolyVoxCore/)
 include_directories(/usr/include/OIS/)
 
 target_link_libraries(Tragopan OgreMain)
