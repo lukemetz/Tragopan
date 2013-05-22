@@ -1,0 +1,51 @@
+
+vertex_program Terrain_vp cg
+{
+  source Terrain.cg
+  entry_point main_vp
+  profiles vs_1_1 arbvp1
+}
+
+fragment_program Terrain_fp cg
+{
+  source Terrain.cg
+  entry_point main_fp
+  profiles ps_1_1 arbfp1 fp20
+}
+
+material Terrain
+{
+  technique
+  {
+    /* //pass with custom shaders 
+    pass
+      {
+
+        vertex_program_ref Terrain_vp
+        {
+          param_named_auto worldViewProj worldviewproj_matrix
+          param_named_auto ambient ambient_clight_colour
+        }
+        
+        fragment_program_ref Terrain_fp
+        {
+
+        }
+      }*/
+    /* //add on lighting after
+    pass {
+        scene_blend modulate 
+        lighting on
+        ambient .5 .5 .5 1
+        diffuse .5 .5 .5 1
+      } */
+    
+    pass
+    {
+      diffuse vertexcolour
+      ambient vertexcolour
+      lighting on 
+    }
+    }
+  }
+}

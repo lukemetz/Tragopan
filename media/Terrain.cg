@@ -1,0 +1,26 @@
+void main_vp(
+  float4 position      : POSITION,
+  float2 uv            : TEXCOORD0,
+  float4 colour        : COLOR,
+  out float4 oPosition : POSITION,
+  out float2 oUv       : TEXCOORD0,
+  out float4 oColour    : COLOR,
+  uniform float4x4 worldViewProj,
+  uniform float4 ambient
+  )
+{
+  oPosition = mul(worldViewProj, position);
+  oUv = uv;
+  oColour = colour;
+}
+
+void main_fp(
+  float4 position : POSITION,
+  float2 uv : TEXCOORD0,
+  float4 colour : COLOR,
+  out float4 oColour : COLOR
+  )
+{
+  oColour = colour;
+}
+

@@ -22,6 +22,11 @@ void Voxelizor::fill()
         PolyVox::Vector3DFloat cur(x,y,z);
         float dist = (cur - center).length();
         uint8_t val = std::min(255.f, std::max(0.f, dist - 30));
+        if (dist < 30) {
+          val = x+y*10;
+        } else {
+          val = 0;
+        }
         voxel_data->setVoxelAt(x, y, z, val);
       }
     }
@@ -33,10 +38,11 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
   Ogre::ManualObject *ogre_mesh;
   ogre_mesh = mgr.createManualObject("name");
   ogre_mesh->setDynamic(true);
-  ogre_mesh->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+  ogre_mesh->begin("Terrain", Ogre::RenderOperation::OT_TRIANGLE_LIST);
   {
     ogre_mesh->position(0,0,0);
     ogre_mesh->normal(0,0,0);
+    ogre_mesh->colour(1,0,0);
   }
   ogre_mesh->end();
 
@@ -67,11 +73,10 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
 
     auto finalPos = pos + static_cast<PolyVox::Vector3DFloat>(mesh.m_Region.getLowerCorner());
     
-    std::cout << finalPos.getX() <<","<< finalPos.getY() <<","<< finalPos.getZ() << std::endl;
     ogre_mesh->position(finalPos.getX(), finalPos.getY(), finalPos.getZ());
     ogre_mesh->normal(normal.getX(), normal.getY(), normal.getZ());
-    auto mat = vertex.getMaterial();
-    ogre_mesh->colour(140, 100, 20);
+    float mat = vertex.getMaterial();
+    ogre_mesh->colour(mat/200, mat/200, mat/200);
   }
   ogre_mesh->end();
   std::cout << "MesH size" <<  vecVertices.size() <<std::endl;
