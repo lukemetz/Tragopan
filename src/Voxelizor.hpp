@@ -5,10 +5,12 @@
 #include <PolyVoxCore/SurfaceMesh.h>
 #include <PolyVoxCore/SimpleVolume.h>
 #include <PolyVoxCore/Material.h>
+#include <PolyVoxCore/MaterialDensityPair.h>
 #include <memory.h>
 
 #include <OgreSceneManager.h>
 
+#include "Voxel.hpp"
 class Voxelizor
 {
 public:
@@ -19,6 +21,6 @@ public:
   
   void to_ogre_mesh(Ogre::SceneManager & mgr);
 
-  std::shared_ptr<PolyVox::SimpleVolume<PolyVox::Material8>> voxel_data;
+  std::shared_ptr<PolyVox::SimpleVolume<Voxel>> voxel_data;
 
 };

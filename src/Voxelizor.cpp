@@ -3,9 +3,14 @@
 #include <OgreManualObject.h>
 #include <OgreRoot.h>
 #include <algorithm>
+
+#include "ExtractionController.hpp"
+#include "ModifiedMarchingCubesSurfaceExtractor.h"
+#include "PositionNormalData.hpp"
+
 Voxelizor::Voxelizor()
 {
-  voxel_data = std::make_shared<PolyVox::SimpleVolume<PolyVox::Material8>>(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(63,63,63)));
+  voxel_data = std::make_shared<PolyVox::SimpleVolume<Voxel>>(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(63,63,63)));
 }
 
 Voxelizor::~Voxelizor()
@@ -21,13 +26,15 @@ void Voxelizor::fill()
       for (int x = 0; x < voxel_data->getWidth(); x++) {
         PolyVox::Vector3DFloat cur(x,y,z);
         float dist = (cur - center).length();
+
         uint8_t val = std::min(255.f, std::max(0.f, dist - 30));
-        if (dist < 30) {
+        /*if (dist < 31) {
           val = x+y*10;
         } else {
           val = 0;
-        }
-        voxel_data->setVoxelAt(x, y, z, val);
+        }*/
+        voxel_data->setVoxelAt(x, y, z, 
+            Voxel((dist-30.0f)+(.1f*rand())/RAND_MAX, PolyVox::Vector3DFloat(x/64.0, y/64.0, z/64.0)));
       }
     }
   }
@@ -49,10 +56,12 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
   Ogre::SceneNode *scene_node = mgr.getRootSceneNode()->createChildSceneNode("vox", Ogre::Vector3(0,0,0));
   scene_node->attachObject(ogre_mesh);
 
-  PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal> mesh;
+  PolyVox::SurfaceMesh<PositionNormalData<PolyVox::Vector3DFloat>> mesh;
   std::cout << "creating surface" << std::endl;
-  PolyVox::CubicSurfaceExtractorWithNormals<PolyVox::SimpleVolume<PolyVox::Material8>>
-    surf(voxel_data.get(), voxel_data->getEnclosingRegion(), &mesh);
+  //PolyVox::CubicSurfaceExtractorWithNormals<PolyVox::SimpleVolume<Voxel>>
+  ExtractionController controller;
+  PolyVox::ModifiedMarchingCubesSurfaceExtractor<PolyVox::SimpleVolume<Voxel>, PolyVox::Vector3DFloat, ExtractionController>
+    surf(voxel_data.get(), voxel_data->getEnclosingRegion(), &mesh, controller);
   surf.execute();
 
   std::cout << "updating ogre" << std::endl;
@@ -75,11 +84,11 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
     
     ogre_mesh->position(finalPos.getX(), finalPos.getY(), finalPos.getZ());
     ogre_mesh->normal(normal.getX(), normal.getY(), normal.getZ());
-    float mat = vertex.getMaterial();
-    ogre_mesh->colour(mat/200, mat/200, mat/200);
+    PolyVox::Vector3DFloat mat = vertex.getMaterial();
+    //ogre_mesh->colour(mat/200, mat/200, mat/200);
+    ogre_mesh->colour(mat.getX(), mat.getY(), mat.getZ());
   }
   ogre_mesh->end();
   std::cout << "MesH size" <<  vecVertices.size() <<std::endl;
-
 }
 
