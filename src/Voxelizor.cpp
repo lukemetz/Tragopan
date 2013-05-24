@@ -27,8 +27,17 @@ void Voxelizor::fill()
         PolyVox::Vector3DFloat cur(x,y,z);
         float dist = (cur - center).length();
 
-        voxel_data->setVoxelAt(x, y, z, 
-            Voxel((30.0f - dist)+(.0f*rand())/RAND_MAX, PolyVox::Vector3DFloat(x/64.0, y/64.0, z/64.0)));
+        //voxel_data->setVoxelAt(x, y, z, 
+        //    Voxel((30.0f - dist)+(.0f*rand())/RAND_MAX, PolyVox::Vector3DFloat(x/64.0, y/64.0, z/64.0)));
+        Voxel v(20 - std::max( std::max(std::fabs(z-32), std::fabs(x-32)), std::fabs(y-32)),
+            PolyVox::Vector3DFloat(x/64.0, y/64.0, z/64.0));
+        
+        float circle_density = 25.0f - dist;
+        if (v.getDensity() < circle_density) {
+          v.setDensity(circle_density);
+          v.setMaterial(PolyVox::Vector3DFloat(1, 0, 0));
+        }
+        voxel_data->setVoxelAt(x, y, z, v);
       }
     }
   }
