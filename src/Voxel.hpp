@@ -21,6 +21,7 @@ class Voxel
     PolyVox::Vector3DFloat & getColor() { return color; };
     
     void setDensity(float dens) {density = dens;}
+    void setMaterial(const PolyVox::Vector3DFloat& mat) {color = mat;}
     PolyVox::Vector3DFloat & getMaterial() {return color;}
 
   private:
