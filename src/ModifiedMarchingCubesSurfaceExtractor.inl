@@ -447,7 +447,8 @@ namespace PolyVox
 					//volume we get the one which is non-zero. Both materials can be non-zero if our volume has a density component.
 					typename Controller::MaterialType uMaterial000 = m_controller.convertToMaterial(v000);
 					typename Controller::MaterialType uMaterial100 = m_controller.convertToMaterial(v100);
-					typename Controller::MaterialType uMaterial = (std::max)(uMaterial000, uMaterial100);
+					//Modification Average instead of Max
+					typename Controller::MaterialType uMaterial = (uMaterial000 + uMaterial100)/2.0f;
 
           //Modification: added PositionNormalData 
 					PositionNormalData<MatType> surfaceVertex(v3dPosition, v3dNormal, uMaterial);
@@ -474,7 +475,8 @@ namespace PolyVox
 					//volume we get the one which is non-zero. Both materials can be non-zero if our volume has a density component.
 					typename Controller::MaterialType uMaterial000 = m_controller.convertToMaterial(v000);
 					typename Controller::MaterialType uMaterial010 = m_controller.convertToMaterial(v010);
-					typename Controller::MaterialType uMaterial = (std::max)(uMaterial000, uMaterial010);
+					//Modification Average instead of Max
+          typename Controller::MaterialType uMaterial = (uMaterial000 + uMaterial010)/2.0f;
 
           //Modification: added PositionNormalData 
 					PositionNormalData<MatType> surfaceVertex(v3dPosition, v3dNormal, uMaterial);
@@ -501,7 +503,8 @@ namespace PolyVox
 					//volume we get the one which is non-zero. Both materials can be non-zero if our volume has a density component.
 					typename Controller::MaterialType uMaterial000 = m_controller.convertToMaterial(v000);
 					typename Controller::MaterialType uMaterial001 = m_controller.convertToMaterial(v001);
-					typename Controller::MaterialType uMaterial = (std::max)(uMaterial000, uMaterial001);
+					//Modification Average instead of Max
+					typename Controller::MaterialType uMaterial = (uMaterial000 + uMaterial001)/2.0f;
 
           //Modification: added PositionNormalData 
 					PositionNormalData<MatType> surfaceVertex(v3dPosition, v3dNormal, uMaterial);
