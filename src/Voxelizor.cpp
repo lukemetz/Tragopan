@@ -27,14 +27,8 @@ void Voxelizor::fill()
         PolyVox::Vector3DFloat cur(x,y,z);
         float dist = (cur - center).length();
 
-        uint8_t val = std::min(255.f, std::max(0.f, dist - 30));
-        /*if (dist < 31) {
-          val = x+y*10;
-        } else {
-          val = 0;
-        }*/
         voxel_data->setVoxelAt(x, y, z, 
-            Voxel((dist-30.0f)+(.1f*rand())/RAND_MAX, PolyVox::Vector3DFloat(x/64.0, y/64.0, z/64.0)));
+            Voxel((30.0f - dist)+(.0f*rand())/RAND_MAX, PolyVox::Vector3DFloat(x/64.0, y/64.0, z/64.0)));
       }
     }
   }
