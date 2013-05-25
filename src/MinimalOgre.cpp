@@ -106,6 +106,8 @@ bool MinimalOgre::go(void)
     // choose scenemanager
     // Get the SceneManager, in this case a generic one
     mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
+    mSceneMgr->addRenderQueueListener(overlaySystem);
+
 //-------------------------------------------------------------------------------------
     // create camera
     // Create the camera
