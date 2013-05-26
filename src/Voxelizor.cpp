@@ -9,6 +9,7 @@
 #include "PositionNormalData.hpp"
 
 #include "VoxelFunction.hpp"
+#include "FunctionLibrary.hpp"
 
 Voxelizor::Voxelizor()
 {
@@ -16,6 +17,7 @@ Voxelizor::Voxelizor()
     (PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(127,127,127)));
   //Kill for now due to compression bugs
   voxel_data->setCompressionEnabled(false);
+  voxel_data->setBorderValue(Voxel(-100, PolyVox::Vector3DFloat(0,0,0)));
 }
 
 Voxelizor::~Voxelizor()
@@ -44,8 +46,13 @@ void Voxelizor::fill()
   };
   
   VoxelFunction combine;
-  combine.addFunction(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(size, size, size)),
-      cube);
+  combine.addFunction(FunctionLibrary::clearAll());
+  combine.addFunction(FunctionLibrary::makeEllipsoid(
+        PolyVox::Vector3DFloat(64, 64, 64),
+        PolyVox::Vector3DFloat(60, 5, 30)));
+
+  //combine.addFunction(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(size, size, size)),
+      //cube);
   
   //combine.addFunction(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(size, size, size)),
   //    sphere);
