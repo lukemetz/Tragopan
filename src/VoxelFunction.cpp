@@ -25,6 +25,12 @@ void VoxelFunction::execute(int x, int y, int z, Voxel & voxel)
   }
 }
 
+void VoxelFunction::addFunction(std::pair<const PolyVox::Region&,
+    std::function<void(int, int, int, Voxel&)>> pair)
+{
+  return addFunction(pair.first, pair.second);
+}
+
 void VoxelFunction::addFunction(const PolyVox::Region & region,
     std::function<void(int, int, int, Voxel&)> func)
 {
