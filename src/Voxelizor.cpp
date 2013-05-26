@@ -42,8 +42,11 @@ void Voxelizor::fill()
   };
   
   VoxelFunction combine;
-  combine.addFunction(cube);
-  combine.addFunction(sphere);
+  combine.addFunction(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(size, size, size)),
+      cube);
+  
+  //combine.addFunction(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(size, size, size)),
+  //    sphere);
 
   for (int z = 0; z < voxel_data->getDepth(); z++) {
     for (int y = 0; y < voxel_data->getHeight(); y++) {

@@ -4,6 +4,7 @@
 #include <PolyVoxCore/MarchingCubesSurfaceExtractor.h>
 #include <PolyVoxCore/SurfaceMesh.h>
 #include <PolyVoxCore/LargeVolume.h>
+#include <PolyVoxCore/SimpleVolume.h>
 #include <PolyVoxCore/Material.h>
 #include <PolyVoxCore/MaterialDensityPair.h>
 #include <memory.h>
