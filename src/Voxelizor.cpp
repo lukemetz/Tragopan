@@ -10,7 +10,8 @@
 
 Voxelizor::Voxelizor()
 {
-  voxel_data = std::make_shared<PolyVox::SimpleVolume<Voxel>>(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(63,63,63)));
+  voxel_data = std::make_shared<PolyVox::LargeVolume<Voxel>>
+    (PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(127,127,127)));
 }
 
 Voxelizor::~Voxelizor()
@@ -20,7 +21,8 @@ Voxelizor::~Voxelizor()
 
 void Voxelizor::fill()
 {
-  PolyVox::Vector3DFloat center(32, 32, 32);
+  int size = 128;
+  PolyVox::Vector3DFloat center(size/2, size/2, size/2);
   for (int z = 0; z < voxel_data->getDepth(); z++) {
     for (int y = 0; y < voxel_data->getHeight(); y++) {
       for (int x = 0; x < voxel_data->getWidth(); x++) {
@@ -29,10 +31,10 @@ void Voxelizor::fill()
 
         //voxel_data->setVoxelAt(x, y, z, 
         //    Voxel((30.0f - dist)+(.0f*rand())/RAND_MAX, PolyVox::Vector3DFloat(x/64.0, y/64.0, z/64.0)));
-        Voxel v(20 - std::max( std::max(std::fabs(z-32), std::fabs(x-32)), std::fabs(y-32)),
-            PolyVox::Vector3DFloat(x/64.0, y/64.0, z/64.0));
+        Voxel v(size/2-20 - std::max( std::max(std::fabs(z-size/2), std::fabs(x-size/2)), std::fabs(y-size/2)),
+            PolyVox::Vector3DFloat(x/static_cast<float>(size), y/static_cast<float>(size), z/static_cast<float>(size)));
         
-        float circle_density = 25.0f - dist;
+        float circle_density = size/2 - 5 - dist;
         if (v.getDensity() < circle_density) {
           v.setDensity(circle_density);
           v.setMaterial(PolyVox::Vector3DFloat(1, 0, 0));
@@ -63,7 +65,7 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
   std::cout << "creating surface" << std::endl;
   //PolyVox::CubicSurfaceExtractorWithNormals<PolyVox::SimpleVolume<Voxel>>
   ExtractionController controller;
-  PolyVox::ModifiedMarchingCubesSurfaceExtractor<PolyVox::SimpleVolume<Voxel>, PolyVox::Vector3DFloat, ExtractionController>
+  PolyVox::ModifiedMarchingCubesSurfaceExtractor<PolyVox::LargeVolume<Voxel>, PolyVox::Vector3DFloat, ExtractionController>
     surf(voxel_data.get(), voxel_data->getEnclosingRegion(), &mesh, controller);
   surf.execute();
 

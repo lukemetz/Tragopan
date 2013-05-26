@@ -3,7 +3,7 @@
 #include <PolyVoxCore/CubicSurfaceExtractorWithNormals.h>
 #include <PolyVoxCore/MarchingCubesSurfaceExtractor.h>
 #include <PolyVoxCore/SurfaceMesh.h>
-#include <PolyVoxCore/SimpleVolume.h>
+#include <PolyVoxCore/LargeVolume.h>
 #include <PolyVoxCore/Material.h>
 #include <PolyVoxCore/MaterialDensityPair.h>
 #include <memory.h>
@@ -21,6 +21,6 @@ public:
   
   void to_ogre_mesh(Ogre::SceneManager & mgr);
 
-  std::shared_ptr<PolyVox::SimpleVolume<Voxel>> voxel_data;
+  std::shared_ptr<PolyVox::LargeVolume<Voxel>> voxel_data;
 
 };
