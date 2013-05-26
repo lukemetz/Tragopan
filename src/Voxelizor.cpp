@@ -14,6 +14,8 @@ Voxelizor::Voxelizor()
 {
   voxel_data = std::make_shared<PolyVox::LargeVolume<Voxel>>
     (PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(127,127,127)));
+  //Kill for now due to compression bugs
+  voxel_data->setCompressionEnabled(false);
 }
 
 Voxelizor::~Voxelizor()
@@ -55,6 +57,9 @@ void Voxelizor::fill()
       }
     }
   }
+
+  std::cout << "Size is (mb): " << voxel_data->calculateSizeInBytes()/1000000.0
+    << " Compresed: " << voxel_data->calculateCompressionRatio() << std::endl;
 }
 
 void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
