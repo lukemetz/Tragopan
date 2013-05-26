@@ -8,6 +8,8 @@
 #include "ModifiedMarchingCubesSurfaceExtractor.h"
 #include "PositionNormalData.hpp"
 
+#include "VoxelFunction.hpp"
+
 Voxelizor::Voxelizor()
 {
   voxel_data = std::make_shared<PolyVox::LargeVolume<Voxel>>
@@ -23,23 +25,30 @@ void Voxelizor::fill()
 {
   int size = 128;
   PolyVox::Vector3DFloat center(size/2, size/2, size/2);
-  for (int z = 0; z < voxel_data->getDepth(); z++) {
-    for (int y = 0; y < voxel_data->getHeight(); y++) {
-      for (int x = 0; x < voxel_data->getWidth(); x++) {
+
+  auto cube = [&size](int x, int y, int z, Voxel& v) {
+    v.setDensity(size/2-20 - std::max( std::max(std::fabs(z-size/2), std::fabs(x-size/2)), std::fabs(y-size/2)));
+    v.setMaterial(PolyVox::Vector3DFloat(x/static_cast<float>(size), y/static_cast<float>(size), z/static_cast<float>(size)));
+  };
+
+  auto sphere = [&center, &size](int x, int y, int z,Voxel & v) {
         PolyVox::Vector3DFloat cur(x,y,z);
         float dist = (cur - center).length();
-
-        //voxel_data->setVoxelAt(x, y, z, 
-        //    Voxel((30.0f - dist)+(.0f*rand())/RAND_MAX, PolyVox::Vector3DFloat(x/64.0, y/64.0, z/64.0)));
-        Voxel v(size/2-20 - std::max( std::max(std::fabs(z-size/2), std::fabs(x-size/2)), std::fabs(y-size/2)),
-            PolyVox::Vector3DFloat(x/static_cast<float>(size), y/static_cast<float>(size), z/static_cast<float>(size)));
-        
         float circle_density = size/2 - 5 - dist;
         if (v.getDensity() < circle_density) {
           v.setDensity(circle_density);
           v.setMaterial(PolyVox::Vector3DFloat(1, 0, 0));
         }
-        voxel_data->setVoxelAt(x, y, z, v);
+  };
+  
+  VoxelFunction combine;
+  combine.addFunction(cube);
+  combine.addFunction(sphere);
+
+  for (int z = 0; z < voxel_data->getDepth(); z++) {
+    for (int y = 0; y < voxel_data->getHeight(); y++) {
+      for (int x = 0; x < voxel_data->getWidth(); x++) {
+        voxel_data->setVoxelAt(x, y, z, combine.execute(x,y,z));
       }
     }
   }
