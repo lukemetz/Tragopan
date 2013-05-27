@@ -3,7 +3,7 @@
 #include <PolyVoxCore/Vector.h>
 #include <functional>
 
-#include "Voxel.hpp"
+class Voxel;
 
 typedef std::function<void(int, int, int, Voxel&)> voxel_function;
 

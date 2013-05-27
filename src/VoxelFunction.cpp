@@ -17,7 +17,7 @@ Voxel VoxelFunction::execute(int x, int y, int z)
 
 void VoxelFunction::execute(int x, int y, int z, Voxel & voxel)
 {
-  auto key = PolyVox::Vector3DInt32((x/32)*32, (y/32)*32, (z/32)*32);
+  auto key = Vec3I((x/32)*32, (y/32)*32, (z/32)*32);
   auto range = functions.equal_range(key);
 
   for (auto it = range.first; it != range.second; ++it) {
@@ -25,13 +25,12 @@ void VoxelFunction::execute(int x, int y, int z, Voxel & voxel)
   }
 }
 
-void VoxelFunction::addFunction(std::pair<const PolyVox::Region&,
-    std::function<void(int, int, int, Voxel&)>> pair)
+void VoxelFunction::addFunction(std::pair<const Region&, voxel_function> pair)
 {
   return addFunction(pair.first, pair.second);
 }
 
-void VoxelFunction::addFunction(const PolyVox::Region & region,
+void VoxelFunction::addFunction(const Region & region,
     std::function<void(int, int, int, Voxel&)> func)
 {
   //TODO don't hard code in 32 for cell size
@@ -48,11 +47,8 @@ void VoxelFunction::addFunction(const PolyVox::Region & region,
   for (int x = lx; x <= ux; x+=32) {
     for (int y = ly; y <= uy; y+=32) {
       for (int z = lz; z <= uz; z+=32) {
-        PolyVox::Vector3DInt32 loc(x,y,z);
-
-        auto pair = std::pair<PolyVox::Vector3DInt32, 
-           std::function<void(int, int, int, Voxel&)>>(loc, func);
-        
+        Vec3I loc(x,y,z);
+        auto pair = std::pair<Vec3I, voxel_function>(loc, func);
         functions.insert(pair);
       }
     }

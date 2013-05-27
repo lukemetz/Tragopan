@@ -14,10 +14,10 @@
 Voxelizor::Voxelizor()
 {
   voxel_data = std::make_shared<PolyVox::LargeVolume<Voxel>>
-    (PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(127,127,127)));
+    (PolyVox::Region(Vec3I(0,0,0), Vec3I(127,127,127)));
   //Kill for now due to compression bugs
   voxel_data->setCompressionEnabled(false);
-  voxel_data->setBorderValue(Voxel(-100, PolyVox::Vector3DFloat(0,0,0)));
+  voxel_data->setBorderValue(Voxel(-100, Vec3F(0,0,0)));
 }
 
 Voxelizor::~Voxelizor()
@@ -31,12 +31,12 @@ void Voxelizor::fill()
   combine.addFunction(FunctionLibrary::clearAll());
   
   combine.addFunction(FunctionLibrary::makeEllipsoid(
-        PolyVox::Vector3DFloat(64, 64, 64),
-        PolyVox::Vector3DFloat(60, 5, 30)));
+        Vec3F(64, 64, 64),
+        Vec3F(60, 5, 30)));
 
   combine.addFunction(FunctionLibrary::makeBox(
-        PolyVox::Vector3DFloat(64, 64, 64),
-        PolyVox::Vector3DFloat(110, 5, 50)));
+        Vec3F(64, 64, 64),
+        Vec3F(110, 5, 50)));
 
   for (int z = 0; z < voxel_data->getDepth(); z++) {
     for (int y = 0; y < voxel_data->getHeight(); y++) {
@@ -66,11 +66,11 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
   Ogre::SceneNode *scene_node = mgr.getRootSceneNode()->createChildSceneNode("vox", Ogre::Vector3(0,0,0));
   scene_node->attachObject(ogre_mesh);
 
-  PolyVox::SurfaceMesh<PositionNormalData<PolyVox::Vector3DFloat>> mesh;
+  PolyVox::SurfaceMesh<PositionNormalData<Vec3F>> mesh;
   std::cout << "creating surface" << std::endl;
   
   ExtractionController controller;
-  PolyVox::ModifiedMarchingCubesSurfaceExtractor<PolyVox::LargeVolume<Voxel>, PolyVox::Vector3DFloat, ExtractionController>
+  PolyVox::ModifiedMarchingCubesSurfaceExtractor<PolyVox::LargeVolume<Voxel>, Vec3F, ExtractionController>
     surf(voxel_data.get(), voxel_data->getEnclosingRegion(), &mesh, controller);
   surf.execute();
 
@@ -90,11 +90,11 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
     auto pos = vertex.getPosition();
     auto normal = vertex.getNormal();
 
-    auto finalPos = pos + static_cast<PolyVox::Vector3DFloat>(mesh.m_Region.getLowerCorner());
+    auto finalPos = pos + static_cast<Vec3F>(mesh.m_Region.getLowerCorner());
     
     ogre_mesh->position(finalPos.getX(), finalPos.getY(), finalPos.getZ());
     ogre_mesh->normal(normal.getX(), normal.getY(), normal.getZ());
-    PolyVox::Vector3DFloat mat = vertex.getMaterial();
+    Vec3F mat = vertex.getMaterial();
     ogre_mesh->colour(mat.getX(), mat.getY(), mat.getZ());
   }
   ogre_mesh->end();

@@ -1,11 +1,14 @@
 #pragma once
+
+#include "TypeDefs.hpp"
+
 #include <PolyVoxCore/Vector.h>
 
 class Voxel
 {
   public:
     Voxel(){};
-    Voxel(float dens, PolyVox::Vector3DFloat colorToSet) : density(dens), color(colorToSet) {};
+    Voxel(float dens, Vec3F colorToSet) : density(dens), color(colorToSet) {};
     bool operator==(const Voxel & rhs)
     {
       return rhs.getDensity() == density;
@@ -18,13 +21,13 @@ class Voxel
     
     float getDensity() const {return density;}
 
-    PolyVox::Vector3DFloat & getColor() { return color; };
+    Vec3F & getColor() { return color; };
     
     void setDensity(float dens) {density = dens;}
-    void setMaterial(const PolyVox::Vector3DFloat& mat) {color = mat;}
-    PolyVox::Vector3DFloat & getMaterial() {return color;}
+    void setMaterial(const Vec3F & mat) {color = mat;}
+    Vec3F & getMaterial() {return color;}
 
   private:
     float density;
-    PolyVox::Vector3DFloat color;
+    Vec3F color;
 };
