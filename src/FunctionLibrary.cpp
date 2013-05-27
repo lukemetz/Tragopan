@@ -8,7 +8,7 @@ namespace FunctionLibrary
         const Vec3F & color,
         const float & steep)
   {
-    auto lambda = [&position, &radius, &color, &steep](int x, int y, int z, Voxel& v) {
+    auto lambda = [position, radius, color, steep](int x, int y, int z, Voxel& v) {
       float oldDensity = v.getDensity();
       float newDensity = (1 - (
                          ((x - position.getX()) * (x - position.getX()) / (radius.getX() * radius.getX())) + 
@@ -33,7 +33,7 @@ namespace FunctionLibrary
 
   std::pair<Region, voxel_function> clearAll(const float & density)
   {
-    auto lambda = [&density](int x, int y, int z, Voxel& v) {
+    auto lambda = [density](int x, int y, int z, Voxel& v) {
       v.setDensity(density);
       v.setMaterial(Vec3F(0,0,0));
     };
@@ -49,7 +49,7 @@ namespace FunctionLibrary
         const Vec3F & color,
         const float & steep)
   {
-    auto lambda = [&center, &size, &color, &steep](int x, int y, int z, Voxel& v) {
+    auto lambda = [center, size, color, steep](int x, int y, int z, Voxel& v) {
       float oldDensity = v.getDensity();
       float newDensity = - std::max( std::max(
                          std::fabs(x - center.getX()) - size.getX()/2,
