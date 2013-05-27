@@ -17,7 +17,7 @@ material Terrain
 {
   technique
   {
-    /* //pass with custom shaders 
+    //pass with custom shaders 
     pass
       {
 
@@ -31,21 +31,21 @@ material Terrain
         {
 
         }
-      }*/
-    /* //add on lighting after
+      }
+    //add on lighting after
     pass {
         scene_blend modulate 
         lighting on
-        ambient .5 .5 .5 1
-        diffuse .5 .5 .5 1
-      } */
-    
+        ambient .8 .8 .8 1
+        diffuse .8 .8 .8 1
+      }
+    /* //Not doing this due to weird motion artifacts
     pass
     {
       diffuse vertexcolour
       ambient vertexcolour
       lighting on 
-    }
+    }*/
     }
   }
 }

@@ -24,5 +24,6 @@ target_link_libraries(Tragopan PolyVoxCore)
 target_link_libraries(Tragopan PolyVoxUtil)
 target_link_libraries(Tragopan OIS)
 target_link_libraries(Tragopan boost_system)
+target_link_libraries(Tragopan noise)
 
 

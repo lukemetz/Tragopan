@@ -20,4 +20,13 @@ namespace FunctionLibrary
         const Vec3F & radius,
         const Vec3F & color = Vec3F(1,1,1),
         const float & steep = 10);
+
+  //Noise related functions
+  
+  std::pair<Region, voxel_function> addPerlin(
+      const float & amplitude,
+      const Vec3F & frequency,
+      const float & lacunarity = 2.0f,
+      const float & persistence = 0.5f,
+      const int & octaveCount = 6);
 };
