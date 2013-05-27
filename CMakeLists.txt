@@ -7,9 +7,10 @@ aux_source_directory(src/ FILES)
 
 add_executable (Tragopan ${FILES})
 
-add_definitions("-g")
+#add_definitions("-g")
 #add_definitions("-Wall")
 add_definitions("-std=c++11")
+add_definitions("-O3")
 
 #TODO generalize me
 include_directories(/usr/local/include/OGRE/)
