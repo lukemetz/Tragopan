@@ -50,6 +50,35 @@ void Voxelizor::fill()
     << " Compresed: " << voxel_data->calculateCompressionRatio() << std::endl;
 }
 
+void Voxelizor::make_wall()
+{
+  VoxelFunction combine;
+  combine.addFunction(FunctionLibrary::clearAll());
+  
+  for (int x = 0; x < 10; x++) {
+    for (int y = 0; y < 10; y++) {
+      combine.addFunction(FunctionLibrary::makeBox(
+            Vec3F(x*11+y%2*5, y*6, 64),
+            Vec3F(9, 5, 10)));
+    }
+  }
+  combine.addFunction(FunctionLibrary::makeBox(
+        Vec3F(50, 30, 64),
+        Vec3F(100, 60, 5)));
+  
+  //Fix me, missing all dem caches. Iterate over 32x32 blocks
+  for (int z = 0; z < voxel_data->getDepth(); z++) {
+    for (int y = 0; y < voxel_data->getHeight(); y++) {
+      for (int x = 0; x < voxel_data->getWidth(); x++) {
+        voxel_data->setVoxelAt(x, y, z, combine.execute(x,y,z));
+      }
+    }
+  }
+
+  std::cout << "Size is (mb): " << voxel_data->calculateSizeInBytes()/1000000.0
+    << " Compresed: " << voxel_data->calculateCompressionRatio() << std::endl;
+}
+
 void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
 {
   Ogre::ManualObject *ogre_mesh;

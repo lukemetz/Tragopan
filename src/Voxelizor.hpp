@@ -19,6 +19,7 @@ public:
   ~Voxelizor();
   
   void fill();
+  void make_wall();
   
   void to_ogre_mesh(Ogre::SceneManager & mgr);
 

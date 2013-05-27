@@ -208,7 +208,8 @@ bool MinimalOgre::go(void)
  
     mRoot->addFrameListener(this);
     Voxelizor *v = new Voxelizor();
-    v->fill();
+    //v->fill();
+    v->make_wall();
     v->to_ogre_mesh(*mSceneMgr);
 //-------------------------------------------------------------------------------------
     mRoot->startRendering();
