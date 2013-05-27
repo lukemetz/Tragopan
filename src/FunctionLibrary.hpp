@@ -7,7 +7,12 @@
 namespace FunctionLibrary
 {
   std::pair<PolyVox::Region,
-    std::function<void(int, int, int, Voxel&)>> makeRectangle();
+    std::function<void(int, int, int, Voxel&)>> makeBox(
+        const PolyVox::Vector3DFloat & center,
+        const PolyVox::Vector3DFloat & size,
+        const PolyVox::Vector3DFloat & color = PolyVox::Vector3DFloat(1,1,1),
+        const float & steep = 10);
+
   
   std::pair<PolyVox::Region,
     std::function<void(int, int, int, Voxel&)>> clearAll(const float & density = -30);

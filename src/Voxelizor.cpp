@@ -47,9 +47,14 @@ void Voxelizor::fill()
   
   VoxelFunction combine;
   combine.addFunction(FunctionLibrary::clearAll());
+  
   combine.addFunction(FunctionLibrary::makeEllipsoid(
         PolyVox::Vector3DFloat(64, 64, 64),
         PolyVox::Vector3DFloat(60, 5, 30)));
+
+  combine.addFunction(FunctionLibrary::makeBox(
+        PolyVox::Vector3DFloat(64, 64, 64),
+        PolyVox::Vector3DFloat(110, 5, 50)));
 
   //combine.addFunction(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(size, size, size)),
       //cube);

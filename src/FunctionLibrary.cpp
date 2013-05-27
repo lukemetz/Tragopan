@@ -16,14 +16,11 @@ namespace FunctionLibrary
                          ((y - position.getY()) * (y - position.getY()) / (radius.getY() * radius.getY())) +
                          ((z - position.getZ()) * (z - position.getZ()) / (radius.getZ() * radius.getZ()))
                          )) * steep;
-      v.setDensity(-100);
       if (oldDensity <= newDensity) {
-        std::cout << x << "," << y << "," << z << ", " << oldDensity << "New:: " << newDensity << std::endl;
         v.setDensity(newDensity);
         v.setMaterial(color);
       }
     };
-    
     //4 is arbitrary just to overshoot to ensure correctness in the isofield
     auto lower_f = position-radius-PolyVox::Vector3DFloat(4, 4, 4);
     auto upper_f = position+radius+PolyVox::Vector3DFloat(4, 4, 4);
@@ -34,6 +31,7 @@ namespace FunctionLibrary
     return std::make_pair<PolyVox::Region&, std::function<void(int, int, int, Voxel&)>>(region, lambda);
   }
 
+
   std::pair<PolyVox::Region,
     std::function<void(int, int, int, Voxel&)>> clearAll(const float & density)
   {
@@ -43,6 +41,35 @@ namespace FunctionLibrary
     };
     //TODO FIX THIS hardcoding of max size. Should really pass 0,0,0 to 0,0,0 and it should do automatically
     auto region = PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(1024, 1024, 1024));
+    return std::make_pair<PolyVox::Region&, std::function<void(int, int, int, Voxel&)>>(region, lambda);
+  }
+  
+
+  std::pair<PolyVox::Region,
+    std::function<void(int, int, int, Voxel&)>> makeBox(
+        const PolyVox::Vector3DFloat & center,
+        const PolyVox::Vector3DFloat & size,
+        const PolyVox::Vector3DFloat & color,
+        const float & steep)
+  {
+    auto lambda = [&center, &size, &color, &steep](int x, int y, int z, Voxel& v) {
+      float oldDensity = v.getDensity();
+      float newDensity = - std::max( std::max(
+                         std::fabs(x - center.getX()) - size.getX()/2,
+                         std::fabs(y - center.getY()) - size.getY()/2),
+                         std::fabs(z - center.getZ()) - size.getZ()/2) * steep;
+      if (oldDensity <= newDensity) {
+        v.setDensity(newDensity);
+        v.setMaterial(color);
+      }
+    };
+    //4 is arbitrary just to overshoot to ensure correctness in the isofield
+    auto lower_f = center-size/PolyVox::Vector3DFloat(2,2,2)-PolyVox::Vector3DFloat(4, 4, 4);
+    auto upper_f = center+size/PolyVox::Vector3DFloat(2,2,2)+PolyVox::Vector3DFloat(4, 4, 4);
+    auto lower = PolyVox::Vector3DInt32(lower_f.getX(), lower_f.getY(), lower_f.getZ());
+    auto upper = PolyVox::Vector3DInt32(upper_f.getX(), upper_f.getY(), upper_f.getZ());
+
+    auto region = PolyVox::Region(lower, upper);
     return std::make_pair<PolyVox::Region&, std::function<void(int, int, int, Voxel&)>>(region, lambda);
   }
 
