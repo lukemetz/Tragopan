@@ -2,11 +2,10 @@
 
 namespace FunctionLibrary
 {
-  std::pair<PolyVox::Region,
-    std::function<void(int, int, int, Voxel&)>> makeEllipsoid(
-        const PolyVox::Vector3DFloat & position,
-        const PolyVox::Vector3DFloat & radius,
-        const PolyVox::Vector3DFloat & color,
+  std::pair<Region, voxel_function> makeEllipsoid(
+        const Vec3F & position,
+        const Vec3F & radius,
+        const Vec3F & color,
         const float & steep)
   {
     auto lambda = [&position, &radius, &color, &steep](int x, int y, int z, Voxel& v) {
@@ -22,34 +21,32 @@ namespace FunctionLibrary
       }
     };
     //4 is arbitrary just to overshoot to ensure correctness in the isofield
-    auto lower_f = position-radius-PolyVox::Vector3DFloat(4, 4, 4);
-    auto upper_f = position+radius+PolyVox::Vector3DFloat(4, 4, 4);
-    auto lower = PolyVox::Vector3DInt32(lower_f.getX(), lower_f.getY(), lower_f.getZ());
-    auto upper = PolyVox::Vector3DInt32(upper_f.getX(), upper_f.getY(), upper_f.getZ());
+    auto lower_f = position-radius-Vec3F(4, 4, 4);
+    auto upper_f = position+radius+Vec3F(4, 4, 4);
+    auto lower = Vec3I(lower_f.getX(), lower_f.getY(), lower_f.getZ());
+    auto upper = Vec3I(upper_f.getX(), upper_f.getY(), upper_f.getZ());
 
-    auto region = PolyVox::Region(lower, upper);
-    return std::make_pair<PolyVox::Region&, std::function<void(int, int, int, Voxel&)>>(region, lambda);
+    auto region = Region(lower, upper);
+    return std::make_pair<Region&, voxel_function>(region, lambda);
   }
 
 
-  std::pair<PolyVox::Region,
-    std::function<void(int, int, int, Voxel&)>> clearAll(const float & density)
+  std::pair<Region, voxel_function> clearAll(const float & density)
   {
     auto lambda = [&density](int x, int y, int z, Voxel& v) {
       v.setDensity(density);
-      v.setMaterial(PolyVox::Vector3DFloat(0,0,0));
+      v.setMaterial(Vec3F(0,0,0));
     };
     //TODO FIX THIS hardcoding of max size. Should really pass 0,0,0 to 0,0,0 and it should do automatically
-    auto region = PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(1024, 1024, 1024));
-    return std::make_pair<PolyVox::Region&, std::function<void(int, int, int, Voxel&)>>(region, lambda);
+    auto region = Region(Vec3I(0,0,0), Vec3I(1024, 1024, 1024));
+    return std::make_pair<Region&, voxel_function>(region, lambda);
   }
   
 
-  std::pair<PolyVox::Region,
-    std::function<void(int, int, int, Voxel&)>> makeBox(
-        const PolyVox::Vector3DFloat & center,
-        const PolyVox::Vector3DFloat & size,
-        const PolyVox::Vector3DFloat & color,
+  std::pair<Region, voxel_function> makeBox(
+        const Vec3F & center,
+        const Vec3F & size,
+        const Vec3F & color,
         const float & steep)
   {
     auto lambda = [&center, &size, &color, &steep](int x, int y, int z, Voxel& v) {
@@ -64,13 +61,12 @@ namespace FunctionLibrary
       }
     };
     //4 is arbitrary just to overshoot to ensure correctness in the isofield
-    auto lower_f = center-size/PolyVox::Vector3DFloat(2,2,2)-PolyVox::Vector3DFloat(4, 4, 4);
-    auto upper_f = center+size/PolyVox::Vector3DFloat(2,2,2)+PolyVox::Vector3DFloat(4, 4, 4);
-    auto lower = PolyVox::Vector3DInt32(lower_f.getX(), lower_f.getY(), lower_f.getZ());
-    auto upper = PolyVox::Vector3DInt32(upper_f.getX(), upper_f.getY(), upper_f.getZ());
+    auto lower_f = center-size/Vec3F(2,2,2)-Vec3F(4, 4, 4);
+    auto upper_f = center+size/Vec3F(2,2,2)+Vec3F(4, 4, 4);
+    auto lower = Vec3I(lower_f.getX(), lower_f.getY(), lower_f.getZ());
+    auto upper = Vec3I(upper_f.getX(), upper_f.getY(), upper_f.getZ());
 
-    auto region = PolyVox::Region(lower, upper);
-    return std::make_pair<PolyVox::Region&, std::function<void(int, int, int, Voxel&)>>(region, lambda);
+    auto region = Region(lower, upper);
+    return std::make_pair<Region&, voxel_function>(region, lambda);
   }
-
 }

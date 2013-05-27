@@ -1,26 +1,23 @@
+#include "TypeDefs.hpp"
+
 #include "Voxel.hpp"
-
 #include <PolyVoxCore/Region.h>
-
 #include <functional>
 
 namespace FunctionLibrary
 {
-  std::pair<PolyVox::Region,
-    std::function<void(int, int, int, Voxel&)>> makeBox(
-        const PolyVox::Vector3DFloat & center,
-        const PolyVox::Vector3DFloat & size,
-        const PolyVox::Vector3DFloat & color = PolyVox::Vector3DFloat(1,1,1),
+  std::pair<Region, voxel_function> makeBox(
+        const Vec3F & center,
+        const Vec3F & size,
+        const Vec3F & color = Vec3F(1,1,1),
         const float & steep = 10);
 
   
-  std::pair<PolyVox::Region,
-    std::function<void(int, int, int, Voxel&)>> clearAll(const float & density = -30);
+  std::pair<Region, voxel_function> clearAll(const float & density = -30);
  
-  std::pair<PolyVox::Region,
-    std::function<void(int, int, int, Voxel&)>> makeEllipsoid(
-        const PolyVox::Vector3DFloat & position,
-        const PolyVox::Vector3DFloat & radius,
-        const PolyVox::Vector3DFloat & color = PolyVox::Vector3DFloat(1,1,1),
+  std::pair<Region, voxel_function> makeEllipsoid(
+        const Vec3F & position,
+        const Vec3F & radius,
+        const Vec3F & color = Vec3F(1,1,1),
         const float & steep = 10);
 };
