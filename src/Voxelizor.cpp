@@ -58,14 +58,25 @@ void Voxelizor::make_wall()
   for (int x = 0; x < 10; x++) {
     for (int y = 0; y < 10; y++) {
       combine.addFunction(FunctionLibrary::makeBox(
-            Vec3F(x*11+y%2*5, y*6, 64),
-            Vec3F(9, 5, 10)));
+            Vec3F(x*11+y%2*5, y*6, 64), //center
+            Vec3F(8, 4, 10), //size
+            Vec3F(128./256, 110./256, 70./256) //color
+            ));
     }
   }
   combine.addFunction(FunctionLibrary::makeBox(
-        Vec3F(50, 30, 64),
-        Vec3F(100, 60, 5)));
+        Vec3F(50, 30, 64), //center
+        Vec3F(100, 60, 4), //size
+        Vec3F(61./256, 54./256, 37./256)
+        ));
   
+  combine.addFunction(FunctionLibrary::addPerlin(
+        13, // amplitude
+        Vec3F(.05, .05, .05))); // frequency
+  combine.addFunction(FunctionLibrary::addPerlin(
+        4.5, // amplitude
+        Vec3F(.5, .5, .5))); //frequency
+
   //Fix me, missing all dem caches. Iterate over 32x32 blocks
   for (int z = 0; z < voxel_data->getDepth(); z++) {
     for (int y = 0; y < voxel_data->getHeight(); y++) {
