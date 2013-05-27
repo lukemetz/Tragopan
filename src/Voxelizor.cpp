@@ -27,24 +27,6 @@ Voxelizor::~Voxelizor()
 
 void Voxelizor::fill()
 {
-  int size = 128;
-  PolyVox::Vector3DFloat center(size/2, size/2, size/2);
-
-  auto cube = [&size](int x, int y, int z, Voxel& v) {
-    v.setDensity(size/2-20 - std::max( std::max(std::fabs(z-size/2), std::fabs(x-size/2)), std::fabs(y-size/2)));
-    v.setMaterial(PolyVox::Vector3DFloat(x/static_cast<float>(size), y/static_cast<float>(size), z/static_cast<float>(size)));
-  };
-
-  auto sphere = [&center, &size](int x, int y, int z,Voxel & v) {
-        PolyVox::Vector3DFloat cur(x,y,z);
-        float dist = (cur - center).length();
-        float circle_density = size/2 - 5 - dist;
-        if (v.getDensity() < circle_density) {
-          v.setDensity(circle_density);
-          v.setMaterial(PolyVox::Vector3DFloat(1, 0, 0));
-        }
-  };
-  
   VoxelFunction combine;
   combine.addFunction(FunctionLibrary::clearAll());
   
@@ -55,12 +37,6 @@ void Voxelizor::fill()
   combine.addFunction(FunctionLibrary::makeBox(
         PolyVox::Vector3DFloat(64, 64, 64),
         PolyVox::Vector3DFloat(110, 5, 50)));
-
-  //combine.addFunction(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(size, size, size)),
-      //cube);
-  
-  //combine.addFunction(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0), PolyVox::Vector3DInt32(size, size, size)),
-  //    sphere);
 
   for (int z = 0; z < voxel_data->getDepth(); z++) {
     for (int y = 0; y < voxel_data->getHeight(); y++) {
@@ -92,7 +68,7 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
 
   PolyVox::SurfaceMesh<PositionNormalData<PolyVox::Vector3DFloat>> mesh;
   std::cout << "creating surface" << std::endl;
-  //PolyVox::CubicSurfaceExtractorWithNormals<PolyVox::SimpleVolume<Voxel>>
+  
   ExtractionController controller;
   PolyVox::ModifiedMarchingCubesSurfaceExtractor<PolyVox::LargeVolume<Voxel>, PolyVox::Vector3DFloat, ExtractionController>
     surf(voxel_data.get(), voxel_data->getEnclosingRegion(), &mesh, controller);
@@ -119,7 +95,6 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
     ogre_mesh->position(finalPos.getX(), finalPos.getY(), finalPos.getZ());
     ogre_mesh->normal(normal.getX(), normal.getY(), normal.getZ());
     PolyVox::Vector3DFloat mat = vertex.getMaterial();
-    //ogre_mesh->colour(mat/200, mat/200, mat/200);
     ogre_mesh->colour(mat.getX(), mat.getY(), mat.getZ());
   }
   ogre_mesh->end();
