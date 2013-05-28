@@ -55,19 +55,26 @@ void Voxelizor::make_wall()
   VoxelFunction combine;
   combine.addFunction(FunctionLibrary::clearAll());
   
-  for (int x = 0; x < 10; x++) {
+  for (int x = 0; x < 9; x++) {
     for (int y = 0; y < 10; y++) {
       combine.addFunction(FunctionLibrary::makeBox(
-            Vec3F(x*11+y%2*5, y*6, 64), //center
+            Vec3F(10+x*11+y%2*5, 2+y*6, 64), //center
             Vec3F(8, 4, 10), //size
             Vec3F(128./256, 110./256, 70./256) //color
             ));
     }
   }
   combine.addFunction(FunctionLibrary::makeBox(
-        Vec3F(50, 30, 64), //center
-        Vec3F(100, 60, 4), //size
+        Vec3F(58, 30, 64), //center
+        Vec3F(97, 60, 4), //size
         Vec3F(61./256, 54./256, 37./256) //Color
+        ));
+  
+  combine.addFunction(FunctionLibrary::makeBox(
+        Vec3F(50, 1, 64), //center
+        Vec3F(150, 2, 150), //size
+        Vec3F(0./256, 143./256, 2./256), //Color
+        30.0f // steep
         ));
   
   combine.addFunction(FunctionLibrary::addPerlinDensity(
