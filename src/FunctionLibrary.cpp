@@ -131,6 +131,7 @@ namespace FunctionLibrary
       Vec3F color = v.getMaterial();
       #define clamp(x) std::max(std::min(1.0f, x), 0.0f)
       v.setMaterial(Vec3F(clamp(color.getX()), clamp(color.getY()), clamp(color.getZ())));
+      #undef clamp
     };
 
     //TODO FIX THIS hardcoding of max size. Should really pass 0,0,0 to 0,0,0 and it should do automatically
