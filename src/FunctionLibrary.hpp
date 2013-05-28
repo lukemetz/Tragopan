@@ -23,10 +23,20 @@ namespace FunctionLibrary
 
   //Noise related functions
   
-  std::pair<Region, voxel_function> addPerlin(
+  std::pair<Region, voxel_function> addPerlinDensity(
       const float & amplitude,
       const Vec3F & frequency,
       const float & lacunarity = 2.0f,
       const float & persistence = 0.5f,
       const int & octaveCount = 6);
+  
+  std::pair<Region, voxel_function> addPerlinColor(
+      const float & amplitude,
+      const Vec3F & frequency,
+      const float & lacunarity = 2.0f,
+      const float & persistence = 0.5f,
+      const int & octaveCount = 6);
+
+  std::pair<Region, voxel_function> clampColor();
+
 };
