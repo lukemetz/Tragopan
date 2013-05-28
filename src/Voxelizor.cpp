@@ -7,6 +7,7 @@
 #include "ExtractionController.hpp"
 #include "ModifiedMarchingCubesSurfaceExtractor.h"
 #include "ModifiedCubicSurfaceExtractor.h"
+#include "ModifiedCubicSurfaceExtractorWithNormals.h"
 #include "PositionNormalData.hpp"
 
 #include "VoxelFunction.hpp"
@@ -120,13 +121,13 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
   Ogre::SceneNode *scene_node = mgr.getRootSceneNode()->createChildSceneNode("vox", Ogre::Vector3(0,0,0));
   scene_node->attachObject(ogre_mesh);
 
-  //PolyVox::SurfaceMesh<PositionNormalData<Vec3F>> mesh;
-  PolyVox::SurfaceMesh<PositionData<Vec3F>> mesh;
+  PolyVox::SurfaceMesh<PositionNormalData<Vec3F>> mesh;
+  //PolyVox::SurfaceMesh<PositionData<Vec3F>> mesh;
   std::cout << "creating surface" << std::endl;
   
   ExtractionController controller;
-  PolyVox::ModifiedCubicSurfaceExtractor<PolyVox::LargeVolume<Voxel>, Vec3F> 
-    surf(voxel_data.get(), voxel_data->getEnclosingRegion(), &mesh, false);
+  PolyVox::ModifiedCubicSurfaceExtractorWithNormals<PolyVox::LargeVolume<Voxel>, Vec3F> 
+    surf(voxel_data.get(), voxel_data->getEnclosingRegion(), &mesh/*, false*/);
   //PolyVox::ModifiedMarchingCubesSurfaceExtractor<PolyVox::LargeVolume<Voxel>, Vec3F, ExtractionController>
   //  surf(voxel_data.get(), voxel_data->getEnclosingRegion(), &mesh, controller);
   
@@ -146,13 +147,13 @@ void Voxelizor::to_ogre_mesh(Ogre::SceneManager &mgr)
   for (int index = beginIndex; index < endIndex; ++index) {
     auto vertex = vecVertices[vecIndices[index]];
     auto pos = vertex.getPosition();
-    //auto normal = vertex.getNormal();
+    auto normal = vertex.getNormal();
 
     auto finalPos = pos + static_cast<Vec3F>(mesh.m_Region.getLowerCorner());
     
     ogre_mesh->position(finalPos.getX(), finalPos.getY(), finalPos.getZ());
     //Not for the cubic
-    //ogre_mesh->normal(normal.getX(), normal.getY(), normal.getZ());
+    ogre_mesh->normal(normal.getX(), normal.getY(), normal.getZ());
     Vec3F mat = vertex.getMaterial();
     ogre_mesh->colour(mat.getX(), mat.getY(), mat.getZ());
   }
