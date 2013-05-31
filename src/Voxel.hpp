@@ -7,7 +7,7 @@
 class Voxel
 {
   public:
-    Voxel(){};
+    Voxel() : density(1), color(Vec3I(1,0,0)){};
     Voxel(float dens, Vec3F colorToSet) : density(dens), color(colorToSet) {};
     bool operator==(const Voxel & rhs)
     {
