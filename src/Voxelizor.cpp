@@ -6,6 +6,7 @@
 #include <thread>
 #include <future>
 #include <mutex>
+#include <chrono>
 
 #include "ExtractionController.hpp"
 #include "ModifiedMarchingCubesSurfaceExtractor.h"
@@ -43,7 +44,7 @@ void Voxelizor::fill()
         Vec3F(64, 64, 64),
         Vec3F(110, 5, 50)));
 
-
+  
   for (int z = 0; z < voxel_data->getDepth(); z++) {
     for (int y = 0; y < voxel_data->getHeight(); y++) {
       for (int x = 0; x < voxel_data->getWidth(); x++) {
@@ -99,24 +100,30 @@ void Voxelizor::make_wall()
   combine.addFunction(FunctionLibrary::clampColor());
   int workSize = 32*32*32;
   std::vector<Vec3I> remaining_offsets;
+  auto t_start = std::chrono::high_resolution_clock::now();
+
   for (int z = 0; z < voxel_data->getDepth(); z+=32) {
     for (int y = 0; y < voxel_data->getHeight(); y+=32) {
       for (int x = 0; x < voxel_data->getWidth(); x+=32) {
         remaining_offsets.push_back(Vec3I(x,y,z));
         
-        /*for (int xx = 0; xx < 32; ++xx) {
+        for (int xx = 0; xx < 32; ++xx) {
           for (int yy = 0; yy < 32; ++yy) {
             for (int zz = 0; zz < 32; ++zz) {
 
               voxel_data->setVoxelAt(x+xx, y+yy, z+zz, combine.execute(x+xx,y+yy,z+zz));
             }
           }
-        }*/
+        }
       }
     }
   }
+  auto t_end = std::chrono::high_resolution_clock::now();
+  auto first_time = std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count();
 
-  int num_tasks = 6;
+  t_start = std::chrono::high_resolution_clock::now();
+
+  int num_tasks = 50;
   std::vector<std::vector<Voxel>> temps;
   std::mutex done_mutex;
   enum codes {
@@ -129,8 +136,7 @@ void Voxelizor::make_wall()
   std::vector<Vec3I> on_offset;
 
   auto function = [&temps, &combine, &done_mutex, &done](int thread_index, Vec3I offset) {
-    std::cout << "Thread "<< thread_index << "Running" << std::endl;
-    std::cout << "On offset (" << offset.getX() <<"," << offset.getY() <<","<<offset.getZ()<< ")" <<std::endl;
+    std::cout << "Offset(" << offset.getX() <<"," << offset.getY() <<","<<offset.getZ()<< ")" <<std::endl;
     
     for (auto i=temps[thread_index].begin(); i != temps[thread_index].end(); ++i) {
       int loc = i - temps[thread_index].begin();
@@ -139,8 +145,6 @@ void Voxelizor::make_wall()
       int z = loc/32/32;
       combine.execute(offset.getX()+x, offset.getY()+y, offset.getZ()+z, *i);
     }
-    std::cout << "Thread " << thread_index << "Done" << std::endl;
-    
     done_mutex.lock();
     done[thread_index] = k_finished_task;
     done_mutex.unlock();
@@ -163,8 +167,6 @@ void Voxelizor::make_wall()
     on_offset.push_back(offset);
 
     auto bind_func = std::bind(function, i, offset);
-    std::cout << "Thread " << i << " Started" << std::endl;
-    
     threads.push_back(std::thread(bind_func));
   }
 
@@ -196,8 +198,6 @@ void Voxelizor::make_wall()
       done_mutex.lock();
       done[i] = k_running;
       done_mutex.unlock();
-      
-      std::cout << "Restarted Thread " << i << " Started" << std::endl;
       threads[i] = std::thread(bind_func);
     } else {
       std::cout << "Stopped thread" << i << std::endl;
@@ -210,6 +210,12 @@ void Voxelizor::make_wall()
   for (auto temp : temps) {
     std::cout << temp[0].getDensity() << temp[199].getDensity() << std::endl;
   }
+
+
+  t_end = std::chrono::high_resolution_clock::now();
+  auto second_time = std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count();
+
+  std::cout << "TIME DELTA is" << static_cast<float>(first_time)/second_time << std::endl;
 
   std::cout << "Size is (mb): " << voxel_data->calculateSizeInBytes()/1000000.0
     << " Compresed: " << voxel_data->calculateCompressionRatio() << std::endl;
