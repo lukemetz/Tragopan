@@ -19,7 +19,6 @@ void VoxelFunction::execute(int x, int y, int z, Voxel & voxel)
 {
   auto key = Vec3I((x/32)*32, (y/32)*32, (z/32)*32);
   auto range = functions.equal_range(key);
-
   for (auto it = range.first; it != range.second; ++it) {
     (it->second)(x,y,z,voxel);
   }
@@ -40,9 +39,9 @@ void VoxelFunction::addFunction(const Region & region,
   int lz = (lower.getZ()/32)*32;
 
   auto upper = region.getUpperCorner();
-  int ux = (upper.getX()/32)*32;
-  int uy = (upper.getY()/32)*32;
-  int uz = (upper.getZ()/32)*32;
+  int ux = (upper.getX()/32+1)*32;
+  int uy = (upper.getY()/32+1)*32;
+  int uz = (upper.getZ()/32+1)*32;
 
   for (int x = lx; x <= ux; x+=32) {
     for (int y = ly; y <= uy; y+=32) {

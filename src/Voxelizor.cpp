@@ -60,7 +60,7 @@ void Voxelizor::fill()
 
 void Voxelizor::make_wall()
 {
-  std::cout << "starting fill" << std::endl;
+  std::cout << "Adding Functions" << std::endl;
   VoxelFunction combine;
   combine.addFunction(FunctionLibrary::clearAll());
   
